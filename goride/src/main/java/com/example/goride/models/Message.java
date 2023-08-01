@@ -1,13 +1,15 @@
 package com.example.goride.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class LocationMessage {
+@AllArgsConstructor
+public class Message {
     private String senderID;
     private String receiverID;
-    private double latitude;
-    private double longitude;
+    private String content;
+
 }
