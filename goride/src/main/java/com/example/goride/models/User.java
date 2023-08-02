@@ -9,7 +9,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -32,8 +34,13 @@ public class User {
     @Size(max = 120)
     private String password;
 
+    private Location location;
+
     @DBRef
     private Set<Role> roles = new HashSet<>();
+
+    @DBRef
+    private List<Booking> bookingList = new ArrayList<>();
 
     public User() {
     }
