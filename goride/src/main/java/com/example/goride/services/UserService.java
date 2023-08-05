@@ -19,13 +19,12 @@ import java.util.List;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private BookingRepository bookingRepository;
 
-    public List<Booking> getAllBooking() {
-        return bookingRepository.findAll();
+    public List<Booking> getBookings() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userId = ((UserDetailsImpl)principal).getId();
+        return bookingRepository.findByUserId(userId);
     }
 
     @Transactional
