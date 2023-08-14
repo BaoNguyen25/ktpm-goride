@@ -60,4 +60,21 @@ public class JwtUtils {
 
         return false;
     }
+
+    public boolean isTokenExpired(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(key())
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            long expirationTime = claims.getExpiration().getTime();
+
+            long currentTime = System.currentTimeMillis();
+
+            return expirationTime < currentTime;
+        } catch (ExpiredJwtException ex) {
+            return true;
+        }
+    }
 }

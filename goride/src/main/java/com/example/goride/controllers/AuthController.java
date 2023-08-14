@@ -1,5 +1,6 @@
 package com.example.goride.controllers;
 
+import com.example.goride.models.Booking;
 import com.example.goride.models.ERole;
 import com.example.goride.models.Role;
 import com.example.goride.models.User;
@@ -13,6 +14,7 @@ import com.example.goride.security.jwt.JwtUtils;
 import com.example.goride.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -120,4 +122,15 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
+
+    @GetMapping("/token/{token}")
+    public ResponseEntity<String> isExpiredToken(@PathVariable String token) {
+
+        boolean isExpiredToken = jwtUtils.isTokenExpired(token);
+        if (isExpiredToken)  {
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token is invalid");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Token is valid");
+    }
+
 }
