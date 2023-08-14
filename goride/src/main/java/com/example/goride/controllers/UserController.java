@@ -2,6 +2,7 @@ package com.example.goride.controllers;
 
 
 import com.example.goride.models.Booking;
+import com.example.goride.models.User;
 import com.example.goride.payload.request.BookingRequest;
 import com.example.goride.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,23 +14,22 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
+@PreAuthorize("hasRole('USER')")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @PreAuthorize("hasRole('USER')")
     @PostMapping("/booking")
-    public ResponseEntity<String> bookRide(@RequestBody BookingRequest bookingRequest) {
+    public ResponseEntity<List<User>> bookRide(@RequestBody BookingRequest bookingRequest) {
         try {
-            userService.bookRide(bookingRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Ride booked successfully");
+            List<User> drivers = userService.bookRide(bookingRequest);
+            return ResponseEntity.status(HttpStatus.OK).body(drivers);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while booking the ride");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @PreAuthorize("hasRole('USER')")
     @GetMapping("/booking")
     public ResponseEntity<List<Booking>> getBookings() {
         try {
@@ -37,6 +37,16 @@ public class UserController {
             return ResponseEntity.ok(bookingList);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/booking/nearby")
+    public ResponseEntity<?> getDriversNearby() {
+        try {
+            List<User> listDrivers = userService.getDriversNearBy();
+            return ResponseEntity.ok(listDrivers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
