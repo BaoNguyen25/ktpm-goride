@@ -20,10 +20,10 @@ public class Booking {
     private String driverId;
     private Location sourceLocation;
     private Location destinationLocation;
-    private double price;
+    private int price;
     private LocalDateTime dateTime;
 
-    public Booking(String userId, String driverId, Location sourceLocation, Location destinationLocation, double price, LocalDateTime dateTime) {
+    public Booking(String userId, String driverId, Location sourceLocation, Location destinationLocation, int price, LocalDateTime dateTime) {
         this.userId = userId;
         this.driverId = driverId;
         this.sourceLocation = sourceLocation;

@@ -40,14 +40,4 @@ public class UserController {
         }
     }
 
-    @GetMapping("/booking/nearby")
-    public ResponseEntity<?> getDriversNearby() {
-        try {
-            List<User> listDrivers = userService.getDriversNearBy();
-            return ResponseEntity.ok(listDrivers);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
 }

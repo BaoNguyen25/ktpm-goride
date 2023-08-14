@@ -12,15 +12,13 @@ import com.example.goride.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Metrics;
-import org.springframework.data.geo.Point;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -42,28 +40,32 @@ public class UserService {
 
     @Transactional
     public List<User> bookRide(BookingRequest bookingRequest) {
-        double price = calculatePrice(bookingRequest);
+        int price = (int) calculatePrice(bookingRequest);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = ((UserDetailsImpl)principal).getId();
 
         Booking savedBooking = new Booking(userId,null, bookingRequest.getSourceLocation(), bookingRequest.getDestinationLocation(), price, LocalDateTime.now());
         bookingRepository.save(savedBooking);
 
-        return getDriversNearBy();
+        return getDriversNearBy(bookingRequest);
     }
 
     public double calculatePrice(BookingRequest bookingRequest) {
-        double distanceInKm = calculateDistance(bookingRequest);
+        double distanceInKm = calculateDistance(
+                bookingRequest.getSourceLocation().getLatitude(),
+                bookingRequest.getSourceLocation().getLongitude(),
+                bookingRequest.getDestinationLocation().getLatitude(),
+                bookingRequest.getDestinationLocation().getLongitude());
         return distanceInKm*10000;
     }
 
-    public double calculateDistance(BookingRequest bookingRequest) {
+    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         final int R = 6371;
 
-        double lat1Rad = Math.toRadians(bookingRequest.getSourceLocation().getLatitude());
-        double lon1Rad = Math.toRadians(bookingRequest.getSourceLocation().getLongitude());
-        double lat2Rad = Math.toRadians(bookingRequest.getDestinationLocation().getLatitude());
-        double lon2Rad = Math.toRadians(bookingRequest.getDestinationLocation().getLongitude());
+        double lat1Rad = Math.toRadians(lat1);
+        double lon1Rad = Math.toRadians(lon1);
+        double lat2Rad = Math.toRadians(lat2);
+        double lon2Rad = Math.toRadians(lon2);
 
         double dLat = lat2Rad - lat1Rad;
         double dLon = lon2Rad - lon1Rad;
@@ -78,13 +80,26 @@ public class UserService {
     }
 
 
-    public List<User> getDriversNearBy() {
-//        Point userLocation = new Point(latitude, longitude);
-        Distance distance = new Distance(2, Metrics.KILOMETERS);
+    public List<User> getDriversNearBy(BookingRequest bookingRequest) {
+       double latUser = bookingRequest.getSourceLocation().getLatitude();
+       double lonUser = bookingRequest.getSourceLocation().getLongitude();
+       double maxDistanceKm = 2.0;
 
        Role driverRole = roleRepository.findByName(ERole.ROLE_DRIVER)
                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-        return userRepository.findByRolesContains(driverRole);
+       List<User> drivers = userRepository.findByRolesContains(driverRole);
+
+       List<User> nearByDrivers = drivers.stream()
+               .filter(driver -> {
+                    double latDriver = driver.getLocation().getLatitude();
+                    double lonDriver = driver.getLocation().getLongitude();
+                    double distance = calculateDistance(latUser, lonUser, latDriver, lonDriver);
+                    return distance <= maxDistanceKm;
+               })
+               .collect(Collectors.toList());
+
+       return nearByDrivers;
+
     }
 
 }

@@ -2,6 +2,7 @@ package com.example.goride.controllers;
 
 
 import com.example.goride.models.Booking;
+import com.example.goride.models.Location;
 import com.example.goride.services.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,12 +14,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/driver")
+@PreAuthorize("hasRole('DRIVER')")
 public class DriverController {
 
     @Autowired
     private DriverService driverService;
 
-    @PreAuthorize("hasRole('DRIVER')")
     @GetMapping("/booking")
     public ResponseEntity<List<Booking>> getBookings() {
         try {
@@ -29,12 +30,21 @@ public class DriverController {
         }
     }
 
-    @PreAuthorize("hasRole('DRIVER')")
     @PatchMapping("/booking/{bookingId}")
     public ResponseEntity<String> acceptBooking(@PathVariable String bookingId) {
         try {
             driverService.acceptBooking(bookingId);
-            return ResponseEntity.ok("Accept booking successfully");
+            return ResponseEntity.ok("Accepted booking successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/location")
+    public ResponseEntity<String> updateLocation(@RequestBody Location location) {
+        try {
+            driverService.updateLocation(location);
+            return ResponseEntity.ok("Updated location successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

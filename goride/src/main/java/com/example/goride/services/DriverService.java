@@ -1,6 +1,8 @@
 package com.example.goride.services;
 
 import com.example.goride.models.Booking;
+import com.example.goride.models.Location;
+import com.example.goride.models.User;
 import com.example.goride.repositories.BookingRepository;
 import com.example.goride.repositories.UserRepository;
 import com.example.goride.security.services.UserDetailsImpl;
@@ -17,6 +19,8 @@ public class DriverService {
     @Autowired
     private BookingRepository bookingRepository;
 
+    @Autowired
+    private UserRepository userRepository;
     public List<Booking> getBookings() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String driverId = ((UserDetailsImpl)principal).getId();
@@ -34,6 +38,20 @@ public class DriverService {
             bookingRepository.save(booking);
         } else {
             throw new RuntimeException("Booking not found with ID: " + bookingId);
+        }
+    }
+
+    public void updateLocation(Location location) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String driverId = ((UserDetailsImpl)principal).getId();
+
+        Optional<User> driverOptional = userRepository.findById(driverId);
+        if (driverOptional.isPresent()) {
+            User driver = driverOptional.get();
+            driver.setLocation(location);
+            userRepository.save(driver);
+        } else {
+            throw new RuntimeException("Driver not found with ID: " + driverId);
         }
     }
 
