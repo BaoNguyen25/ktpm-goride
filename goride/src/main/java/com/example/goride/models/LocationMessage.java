@@ -10,4 +10,5 @@ public class LocationMessage {
     private String receiverID;
     private double latitude;
     private double longitude;
+    private String message;
 }

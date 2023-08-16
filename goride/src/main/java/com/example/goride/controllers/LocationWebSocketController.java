@@ -35,7 +35,24 @@ public class LocationWebSocketController {
 
     @MessageMapping("/sendLocation")
     public void sendLocation(LocationMessage message) {
-        String recipientTopic = "/topic/user/" + message.getReceiverID() + "/location";
+        System.out.println(message.getReceiverID());
+        String recipientTopic = "/topic/driver/" + message.getReceiverID() + "/booking";
+
+        messagingTemplate.convertAndSend(recipientTopic, message);
+    }
+
+    @MessageMapping("/accept")
+    public void acceptBooking(LocationMessage message) {
+        System.out.println(message.getReceiverID());
+        String recipientTopic = "/topic/user/" + message.getReceiverID() + "/booking";
+
+        messagingTemplate.convertAndSend(recipientTopic, message);
+    }
+
+    @MessageMapping("/pickup")
+    public void acceptPickup(LocationMessage message) {
+        System.out.println(message.getReceiverID());
+        String recipientTopic = "/topic/user/" + message.getReceiverID() + "/pickup";
 
         messagingTemplate.convertAndSend(recipientTopic, message);
     }
