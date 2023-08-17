@@ -46,7 +46,6 @@ public class UserService {
 
         Booking savedBooking = new Booking(userId,null, bookingRequest.getSourceLocation(), bookingRequest.getDestinationLocation(), price, LocalDateTime.now());
         bookingRepository.save(savedBooking);
-
         return getDriversNearBy(bookingRequest);
     }
 
