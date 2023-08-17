@@ -55,4 +55,12 @@ public class DriverService {
         }
     }
 
+    public User getUserById (String id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        } else {
+            throw new RuntimeException("User not found with ID: " + id);
+        }
+    }
 }
