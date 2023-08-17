@@ -49,4 +49,13 @@ public class DriverController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> getUser(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(driverService.getUserById(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
 }

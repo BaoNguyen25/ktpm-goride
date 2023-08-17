@@ -40,4 +40,13 @@ public class UserController {
         }
     }
 
+    @GetMapping("/driver/{id}")
+    public ResponseEntity<?> getDriver(@PathVariable String id) {
+        try {
+            return ResponseEntity.ok(userService.getDriverById(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
+    }
+
 }

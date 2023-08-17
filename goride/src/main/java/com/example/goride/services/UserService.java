@@ -10,14 +10,13 @@ import com.example.goride.repositories.RoleRepository;
 import com.example.goride.repositories.UserRepository;
 import com.example.goride.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Distance;
-import org.springframework.data.geo.Metrics;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,6 +98,15 @@ public class UserService {
 
        return nearByDrivers;
 
+    }
+
+    public User getDriverById (String id) {
+        Optional<User> driverOptional = userRepository.findById(id);
+        if (driverOptional.isPresent()) {
+            return driverOptional.get();
+        } else {
+            throw new RuntimeException("Driver not found with ID: " + id);
+        }
     }
 
 }
