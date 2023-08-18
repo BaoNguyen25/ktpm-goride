@@ -42,6 +42,12 @@ public class User {
     @DBRef
     private List<Booking> bookingList = new ArrayList<>();
 
+    private String vehicleType;
+
+    private String licensePlate;
+
+    private boolean available;
+
     public User() {
     }
 

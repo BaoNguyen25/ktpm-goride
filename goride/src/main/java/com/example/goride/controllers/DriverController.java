@@ -40,11 +40,11 @@ public class DriverController {
         }
     }
 
-    @PatchMapping("/location")
-    public ResponseEntity<String> updateLocation(@RequestBody Location location) {
+    @PatchMapping("/status")
+    public ResponseEntity<String> updateStatus(@RequestBody boolean status) {
         try {
-            driverService.updateLocation(location);
-            return ResponseEntity.ok("Updated location successfully");
+            driverService.updateStatus(status);
+            return ResponseEntity.ok("Updated status successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

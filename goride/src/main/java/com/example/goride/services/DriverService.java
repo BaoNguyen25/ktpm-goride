@@ -63,4 +63,18 @@ public class DriverService {
             throw new RuntimeException("User not found with ID: " + id);
         }
     }
+
+    public void updateStatus(boolean status) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String driverId = ((UserDetailsImpl)principal).getId();
+
+        Optional<User> driverOptional = userRepository.findById(driverId);
+        if (driverOptional.isPresent()) {
+            User driver = driverOptional.get();
+            driver.setAvailable(status);
+            userRepository.save(driver);
+        } else {
+            throw new RuntimeException("Driver not found with ID: " + driverId);
+        }
+    }
 }
