@@ -2,7 +2,6 @@ package com.example.goride.controllers;
 
 
 import com.example.goride.models.Booking;
-import com.example.goride.models.Driver;
 import com.example.goride.models.User;
 import com.example.goride.payload.request.BookingRequest;
 import com.example.goride.services.UserService;
@@ -22,19 +21,32 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/booking")
-    public ResponseEntity<List<Driver>> bookRide(@RequestBody BookingRequest bookingRequest) {
-        List<Driver> drivers = userService.bookRide(bookingRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(drivers);
+    public ResponseEntity<List<User>> bookRide(@RequestBody BookingRequest bookingRequest) {
+        try {
+            List<User> drivers = userService.bookRide(bookingRequest);
+            return ResponseEntity.status(HttpStatus.OK).body(drivers);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/booking")
     public ResponseEntity<List<Booking>> getBookings() {
-        List<Booking> bookingList = userService.getBookings();
-        return ResponseEntity.ok(bookingList);
+        try {
+            List<Booking> bookingList = userService.getBookings();
+            return ResponseEntity.ok(bookingList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/driver/{id}")
     public ResponseEntity<?> getDriver(@PathVariable String id) {
-        return ResponseEntity.ok(userService.getDriverById(id));
+        try {
+            return ResponseEntity.ok(userService.getDriverById(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
     }
+
 }

@@ -22,24 +22,40 @@ public class DriverController {
 
     @GetMapping("/booking")
     public ResponseEntity<List<Booking>> getBookings() {
-        List<Booking> bookingList = driverService.getBookings();
-        return ResponseEntity.ok(bookingList);
+        try {
+            List<Booking> bookingList = driverService.getBookings();
+            return ResponseEntity.ok(bookingList);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PatchMapping("/booking/{bookingId}")
     public ResponseEntity<String> acceptBooking(@PathVariable String bookingId) {
-        driverService.acceptBooking(bookingId);
-        return ResponseEntity.ok("Accepted booking successfully");
+        try {
+            driverService.acceptBooking(bookingId);
+            return ResponseEntity.ok("Accepted booking successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PatchMapping("/location")
     public ResponseEntity<String> updateLocation(@RequestBody Location location) {
-        driverService.updateLocation(location);
-        return ResponseEntity.ok("Updated location successfully");
+        try {
+            driverService.updateLocation(location);
+            return ResponseEntity.ok("Updated location successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable String id) {
-        return ResponseEntity.ok(driverService.getUserById(id));
+        try {
+            return ResponseEntity.ok(driverService.getUserById(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e);
+        }
     }
 }
