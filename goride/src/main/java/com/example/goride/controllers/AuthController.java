@@ -107,6 +107,9 @@ public class AuthController {
                         Role driverRole = roleRepository.findByName(ERole.ROLE_DRIVER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(driverRole);
+                        user.setAvailable(signUpRequest.isAvailable());
+                        user.setLicensePlate(signUpRequest.getLicensePlate());
+                        user.setVehicleType(signUpRequest.getVehicleType());
 
                         break;
                     default:

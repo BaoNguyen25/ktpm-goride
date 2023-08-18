@@ -4,6 +4,7 @@ package com.example.goride.controllers;
 import com.example.goride.models.Booking;
 import com.example.goride.models.Location;
 import com.example.goride.services.DriverService;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +41,8 @@ public class DriverController {
         }
     }
 
-    @PatchMapping("/status")
-    public ResponseEntity<String> updateStatus(@RequestBody boolean status) {
+    @PatchMapping()
+    public ResponseEntity<String> updateStatus(@PathParam("status") boolean status) {
         try {
             driverService.updateStatus(status);
             return ResponseEntity.ok("Updated status successfully");
