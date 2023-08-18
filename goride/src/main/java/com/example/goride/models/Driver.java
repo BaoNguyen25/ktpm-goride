@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
 @Setter
-@Document(collection = "drivers")
+@Document(collection = "users")
 public class Driver extends User {
     private boolean available;
     private VehicleType vehicleType;
