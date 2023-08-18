@@ -1,13 +1,12 @@
 package com.example.goride.controllers;
 
-import com.example.goride.models.Booking;
-import com.example.goride.models.ERole;
-import com.example.goride.models.Role;
-import com.example.goride.models.User;
+import com.example.goride.models.*;
+import com.example.goride.payload.request.DriverSignupRequest;
 import com.example.goride.payload.request.LoginRequest;
 import com.example.goride.payload.request.SignupRequest;
 import com.example.goride.payload.response.JwtResponse;
 import com.example.goride.payload.response.MessageResponse;
+import com.example.goride.repositories.DriverRepository;
 import com.example.goride.repositories.RoleRepository;
 import com.example.goride.repositories.UserRepository;
 import com.example.goride.security.jwt.JwtUtils;
@@ -42,6 +41,9 @@ public class AuthController {
     private RoleRepository roleRepository;
 
     @Autowired
+    private DriverRepository driverRepository;
+
+    @Autowired
     private PasswordEncoder encoder;
 
     @Autowired
@@ -68,7 +70,7 @@ public class AuthController {
                 roles));
     }
 
-    @PostMapping("/signup")
+    @PostMapping("/user/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
@@ -87,40 +89,47 @@ public class AuthController {
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
-        Set<String> strRoles = signUpRequest.getRoles();
         Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    case "driver":
-                        Role driverRole = roleRepository.findByName(ERole.ROLE_DRIVER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(driverRole);
-
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                }
-            });
-        }
+        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Error: User role is not found."));
+        roles.add(userRole);
 
         user.setRoles(roles);
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @PostMapping("/driver/signup")
+    public ResponseEntity<?> registerDriver(@Valid @RequestBody DriverSignupRequest request) {
+        if (driverRepository.existsByUsername(request.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username is already taken!"));
+        }
+
+        if (driverRepository.existsByEmail(request.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
+        }
+
+        Driver driver = new Driver(request.getUsername(),
+                request.getEmail(),
+                encoder.encode(request.getPassword()),
+                request.isAvailable(),
+                request.getVehicleType(),
+                request.getSilencePlate());
+
+        Set<Role> roles = new HashSet<>();
+        Role driverRole = roleRepository.findByName(ERole.ROLE_DRIVER)
+                .orElseThrow(() -> new RuntimeException("Error: Driver role is not found."));
+        roles.add(driverRole);
+
+        driver.setRoles(roles);
+        driverRepository.save(driver);
+
+        return ResponseEntity.ok(new MessageResponse("Driver registered successfully!"));
     }
 
     @GetMapping("/token/{token}")

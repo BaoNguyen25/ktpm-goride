@@ -1,11 +1,9 @@
 package com.example.goride.services;
 
-import com.example.goride.models.Booking;
-import com.example.goride.models.ERole;
-import com.example.goride.models.Role;
-import com.example.goride.models.User;
+import com.example.goride.models.*;
 import com.example.goride.payload.request.BookingRequest;
 import com.example.goride.repositories.BookingRepository;
+import com.example.goride.repositories.DriverRepository;
 import com.example.goride.repositories.RoleRepository;
 import com.example.goride.repositories.UserRepository;
 import com.example.goride.security.services.UserDetailsImpl;
@@ -29,7 +27,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private DriverRepository driverRepository;
 
     public List<Booking> getBookings() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -38,7 +36,7 @@ public class UserService {
     }
 
     @Transactional
-    public List<User> bookRide(BookingRequest bookingRequest) {
+    public List<Driver> bookRide(BookingRequest bookingRequest) {
         int price = (int) calculatePrice(bookingRequest);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = ((UserDetailsImpl)principal).getId();
@@ -78,16 +76,15 @@ public class UserService {
     }
 
 
-    public List<User> getDriversNearBy(BookingRequest bookingRequest) {
+    public List<Driver> getDriversNearBy(BookingRequest bookingRequest) {
        double latUser = bookingRequest.getSourceLocation().getLatitude();
        double lonUser = bookingRequest.getSourceLocation().getLongitude();
        double maxDistanceKm = 2.0;
 
-       Role driverRole = roleRepository.findByName(ERole.ROLE_DRIVER)
-               .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-       List<User> drivers = userRepository.findByRolesContains(driverRole);
 
-       List<User> nearByDrivers = drivers.stream()
+       List<Driver> drivers = driverRepository.findAll();
+
+       List<Driver> nearByDrivers = drivers.stream()
                .filter(driver -> {
                     double latDriver = driver.getLocation().getLatitude();
                     double lonDriver = driver.getLocation().getLongitude();
@@ -100,8 +97,8 @@ public class UserService {
 
     }
 
-    public User getDriverById (String id) {
-        Optional<User> driverOptional = userRepository.findById(id);
+    public Driver getDriverById (String id) {
+        Optional<Driver> driverOptional = driverRepository.findById(id);
         if (driverOptional.isPresent()) {
             return driverOptional.get();
         } else {

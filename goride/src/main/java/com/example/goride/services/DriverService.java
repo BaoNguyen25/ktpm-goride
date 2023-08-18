@@ -1,9 +1,11 @@
 package com.example.goride.services;
 
 import com.example.goride.models.Booking;
+import com.example.goride.models.Driver;
 import com.example.goride.models.Location;
 import com.example.goride.models.User;
 import com.example.goride.repositories.BookingRepository;
+import com.example.goride.repositories.DriverRepository;
 import com.example.goride.repositories.UserRepository;
 import com.example.goride.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,11 @@ public class DriverService {
     private BookingRepository bookingRepository;
 
     @Autowired
+    private DriverRepository driverRepository;
+
+    @Autowired
     private UserRepository userRepository;
+
     public List<Booking> getBookings() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String driverId = ((UserDetailsImpl)principal).getId();
@@ -45,11 +51,11 @@ public class DriverService {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String driverId = ((UserDetailsImpl)principal).getId();
 
-        Optional<User> driverOptional = userRepository.findById(driverId);
+        Optional<Driver> driverOptional = driverRepository.findById(driverId);
         if (driverOptional.isPresent()) {
-            User driver = driverOptional.get();
+            Driver driver = driverOptional.get();
             driver.setLocation(location);
-            userRepository.save(driver);
+            driverRepository.save(driver);
         } else {
             throw new RuntimeException("Driver not found with ID: " + driverId);
         }
