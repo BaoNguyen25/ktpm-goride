@@ -22,31 +22,19 @@ public class UserController {
 
     @PostMapping("/booking")
     public ResponseEntity<List<User>> bookRide(@RequestBody BookingRequest bookingRequest) {
-        try {
-            List<User> drivers = userService.bookRide(bookingRequest);
-            return ResponseEntity.status(HttpStatus.OK).body(drivers);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        List<User> drivers = userService.bookRide(bookingRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(drivers);
     }
 
     @GetMapping("/booking")
     public ResponseEntity<List<Booking>> getBookings() {
-        try {
-            List<Booking> bookingList = userService.getBookings();
-            return ResponseEntity.ok(bookingList);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        List<Booking> bookingList = userService.getBookings();
+        return ResponseEntity.ok(bookingList);
     }
 
     @GetMapping("/driver/{id}")
     public ResponseEntity<?> getDriver(@PathVariable String id) {
-        try {
-            return ResponseEntity.ok(userService.getDriverById(id));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e);
-        }
+        return ResponseEntity.ok(userService.getDriverById(id));
     }
 
 }

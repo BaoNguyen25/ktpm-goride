@@ -23,40 +23,30 @@ public class DriverController {
 
     @GetMapping("/booking")
     public ResponseEntity<List<Booking>> getBookings() {
-        try {
-            List<Booking> bookingList = driverService.getBookings();
-            return ResponseEntity.ok(bookingList);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        List<Booking> bookingList = driverService.getBookings();
+        return ResponseEntity.ok(bookingList);
     }
 
     @PatchMapping("/booking/{bookingId}")
     public ResponseEntity<String> acceptBooking(@PathVariable String bookingId) {
-        try {
-            driverService.acceptBooking(bookingId);
-            return ResponseEntity.ok("Accepted booking successfully");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        driverService.acceptBooking(bookingId);
+        return ResponseEntity.ok("Accepted booking successfully");
     }
 
     @PatchMapping()
     public ResponseEntity<String> updateStatus(@PathParam("status") boolean status) {
-        try {
-            driverService.updateStatus(status);
-            return ResponseEntity.ok("Updated status successfully");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        driverService.updateStatus(status);
+        return ResponseEntity.ok("Updated status successfully");
+    }
+
+    @PatchMapping("/location")
+    public ResponseEntity<String> updateLocation(@RequestBody Location location) {
+        driverService.updateLocation(location);
+        return ResponseEntity.ok("Updated location successfully");
     }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<?> getUser(@PathVariable String id) {
-        try {
-            return ResponseEntity.ok(driverService.getUserById(id));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e);
-        }
+        return ResponseEntity.ok(driverService.getUserById(id));
     }
 }
