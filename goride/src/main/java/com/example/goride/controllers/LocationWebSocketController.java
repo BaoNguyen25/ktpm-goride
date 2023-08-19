@@ -44,7 +44,7 @@ public class LocationWebSocketController {
     @MessageMapping("/accept")
     public void acceptBooking(LocationMessage message) {
         System.out.println(message.getReceiverID());
-        String recipientTopic = "/topic/user/" + message.getReceiverID() + "/booking";
+        String recipientTopic = "/topic/user/" + message.getReceiverID() + "/accept";
 
         messagingTemplate.convertAndSend(recipientTopic, message);
     }
