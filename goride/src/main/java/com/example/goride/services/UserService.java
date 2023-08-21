@@ -99,6 +99,11 @@ public class UserService {
                })
                .collect(Collectors.toList());
 
+        nearByDrivers.sort(Comparator.comparingDouble(driver -> {
+            double latDriver = driver.getLocation().getLatitude();
+            double lonDriver = driver.getLocation().getLongitude();
+            return calculateDistance(latUser, lonUser, latDriver, lonDriver);
+        }));
 
        return nearByDrivers;
 
