@@ -11,6 +11,7 @@ com\example\goride\models\ERole.class
 com\example\goride\models\Booking.class
 com\example\goride\controllers\LocationWebSocketController.class
 com\example\goride\payload\request\BookingRequest.class
+com\example\goride\payload\response\BookingResponse.class
 com\example\goride\payload\response\JwtResponse.class
 com\example\goride\models\Message.class
 com\example\goride\controllers\DriverController.class
