@@ -4,6 +4,7 @@ package com.example.goride.controllers;
 import com.example.goride.models.Booking;
 import com.example.goride.models.User;
 import com.example.goride.payload.request.BookingRequest;
+import com.example.goride.payload.response.BookingResponse;
 import com.example.goride.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/booking")
-    public ResponseEntity<List<User>> bookRide(@RequestBody BookingRequest bookingRequest) {
-        List<User> drivers = userService.bookRide(bookingRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(drivers);
+    public ResponseEntity<BookingResponse> bookRide(@RequestBody BookingRequest bookingRequest) {
+        BookingResponse response = userService.bookRide(bookingRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @GetMapping("/booking")

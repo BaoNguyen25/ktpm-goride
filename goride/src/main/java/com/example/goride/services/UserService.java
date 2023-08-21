@@ -5,6 +5,7 @@ import com.example.goride.models.ERole;
 import com.example.goride.models.Role;
 import com.example.goride.models.User;
 import com.example.goride.payload.request.BookingRequest;
+import com.example.goride.payload.response.BookingResponse;
 import com.example.goride.repositories.BookingRepository;
 import com.example.goride.repositories.RoleRepository;
 import com.example.goride.repositories.UserRepository;
@@ -40,14 +41,14 @@ public class UserService {
     }
 
     @Transactional
-    public List<User> bookRide(BookingRequest bookingRequest) {
+    public BookingResponse bookRide(BookingRequest bookingRequest) {
         int price = (int) calculatePrice(bookingRequest);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = ((UserDetailsImpl)principal).getId();
 
         Booking savedBooking = new Booking(userId,null, bookingRequest.getSourceLocation(), bookingRequest.getDestinationLocation(), price, LocalDateTime.now());
         bookingRepository.save(savedBooking);
-        return getDriversNearBy(bookingRequest);
+        return new BookingResponse(getDriversNearBy(bookingRequest), savedBooking.getId());
     }
 
     public double calculatePrice(BookingRequest bookingRequest) {
