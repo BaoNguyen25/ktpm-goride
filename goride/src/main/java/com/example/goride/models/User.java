@@ -36,6 +36,8 @@ public class User {
 
     private Location location;
 
+    private String phoneNumber;
+
     @DBRef
     private Set<Role> roles = new HashSet<>();
 

@@ -119,7 +119,7 @@ public class AuthController {
                 }
             });
         }
-
+        user.setPhoneNumber(signUpRequest.getPhoneNumber());
         user.setRoles(roles);
         userRepository.save(user);
 
