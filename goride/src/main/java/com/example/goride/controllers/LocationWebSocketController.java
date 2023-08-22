@@ -32,6 +32,13 @@ public class LocationWebSocketController {
         String recipientTopic = "/topic/user/" + recipientUserId + "/chat";
         messagingTemplate.convertAndSend(recipientTopic, message);
     }
+    @MessageMapping("/sendLocationBooking")
+    public void sendLocationBooking(LocationMessage message) {
+        System.out.println(message.getReceiverID());
+        String recipientTopic = "/topic/driver/" + message.getReceiverID() + "/location";
+
+        messagingTemplate.convertAndSend(recipientTopic, message);
+    }
 
     @MessageMapping("/sendLocation")
     public void sendLocation(LocationMessage message) {
