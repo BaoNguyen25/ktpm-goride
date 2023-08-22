@@ -13,4 +13,5 @@ public class LocationMessage {
     private double desLat;
     private double desLng;
     private String message;
+    private String bookingId;
 }
