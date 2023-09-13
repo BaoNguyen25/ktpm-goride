@@ -1,4 +1,4 @@
-# Created at 2023-09-13T14:58:45.630
+# Created at 2023-09-13T15:39:08.495
 Boot Manifest-JAR contains absolute paths in classpath 'E:\Java\ktpm-goride\goride\target\test-classes'
 Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
 'other' has different root
