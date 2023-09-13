@@ -20,7 +20,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
+    @CrossOrigin(origins = "*")
     @PostMapping("/booking")
     public ResponseEntity<BookingResponse> bookRide(@RequestBody BookingRequest bookingRequest) {
         BookingResponse response = userService.bookRide(bookingRequest);
