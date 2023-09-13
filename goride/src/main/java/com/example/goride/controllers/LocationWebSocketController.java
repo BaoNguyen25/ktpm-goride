@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.xml.stream.Location;
 
@@ -23,7 +24,7 @@ public class LocationWebSocketController {
     public LocationWebSocketController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
-
+    @CrossOrigin(origins = "*")
     @MessageMapping("/chat")
 //    @SendTo("/topic/location")
     public void chat(Message message) {
@@ -32,6 +33,8 @@ public class LocationWebSocketController {
         String recipientTopic = "/topic/user/" + recipientUserId + "/chat";
         messagingTemplate.convertAndSend(recipientTopic, message);
     }
+    @CrossOrigin(origins = "*")
+
     @MessageMapping("/sendLocationBooking")
     public void sendLocationBooking(LocationMessage message) {
         System.out.println(message.getReceiverID());
@@ -39,6 +42,7 @@ public class LocationWebSocketController {
 
         messagingTemplate.convertAndSend(recipientTopic, message);
     }
+    @CrossOrigin(origins = "*")
 
     @MessageMapping("/sendLocation")
     public void sendLocation(LocationMessage message) {
@@ -47,6 +51,7 @@ public class LocationWebSocketController {
 
         messagingTemplate.convertAndSend(recipientTopic, message);
     }
+    @CrossOrigin(origins = "*")
 
     @MessageMapping("/accept")
     public void acceptBooking(LocationMessage message) {
@@ -55,6 +60,7 @@ public class LocationWebSocketController {
 
         messagingTemplate.convertAndSend(recipientTopic, message);
     }
+    @CrossOrigin(origins = "*")
 
     @MessageMapping("/pickup")
     public void acceptPickup(LocationMessage message) {
